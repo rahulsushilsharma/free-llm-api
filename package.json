@@ -2,14 +2,20 @@
   "name": "chat-to-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/main.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "@types/selenium-webdriver": "^4.1.15",
+    "typescript": "^5.1.6"
+  },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "selenium-webdriver": "^4.11.1"
   }
 }

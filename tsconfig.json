@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "esnext",
+    "strict": true,
+    "outDir": "dist",
+    "sourceMap": false,
+    "moduleResolution":"node",
+    "allowSyntheticDefaultImports":true,
+  },
+  
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
