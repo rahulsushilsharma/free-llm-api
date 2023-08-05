@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { extitSelenium, loginToOpenAi, seleniumInit } from './selenium.js';
+import { extitSelenium, loginToOpenAi, messege, seleniumInit, skipIntro } from './selenium.js';
 
 console.log(process.env.OPENAI_ID)
 console.log(process.env.OPENAI_PASSWORD)
@@ -10,6 +10,8 @@ const pass = process.env.OPENAI_PASSWORD || ""
 async function main() {
     await seleniumInit()
     await loginToOpenAi(id,pass)
-    await extitSelenium()
+    await skipIntro()
+    await messege("hi")
+    // await extitSelenium()
 }
 main()

@@ -5,6 +5,7 @@ import { Builder, Browser, By, until, WebDriver, WebElement, } from "selenium-we
 // options.addArguments('--disable-extensions')
 // options.
 
+
 let driver: WebDriver | null = null
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -34,7 +35,6 @@ async function loginToOpenAi(id: string, pass: string) {
     if (driver) {
         await sleep(1000)
         try {
-
             const btn = await driver.findElement(By.xpath(loginButtonPath1))
             await driver.wait(until.elementIsVisible(btn));
             await btn.click()
@@ -43,19 +43,52 @@ async function loginToOpenAi(id: string, pass: string) {
             await driver.wait(until.elementIsVisible(btn));
             await btn.click()
         }
+
         await sleep(3000)
         const email = await driver.findElement({ css: '#username' })
         await driver.wait(until.elementIsVisible(email));
         await email.sendKeys(id);
         // await driver?.findElement()
+        await sleep(3000)
+
         await driver?.findElement(By.xpath(continueButtonPath1)).click();
+        await sleep(3000)
+
         await driver?.findElement(By.xpath(passwordFeildPath)).sendKeys(pass);
+        await sleep(3000)
+
         await driver?.findElement(By.xpath(continueButtonPath2)).click();
     }
+}
+
+async function skipIntro() {
+    const nextBtnPath = "//*[text()='Next']"
+    const doneBtnPath = "//*[text()='Done']"
+
+    await sleep(3000)
+
+    await driver?.findElement(By.xpath(nextBtnPath)).click();
+    await sleep(1000)
+
+    await driver?.findElement(By.xpath(nextBtnPath)).click();
+    await sleep(1000)
+
+    await driver?.findElement(By.xpath(doneBtnPath)).click();
+
+}
+async function messege(messege: string) {
+    const textAreaPath = '//*[@id="prompt-textarea"]'
+    const submitButtonPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[2]/form/div/div[2]/button'
+
+    await driver?.findElement(By.xpath(textAreaPath)).sendKeys(messege);
+    await sleep(3000)
+
+    await driver?.findElement(By.xpath(submitButtonPath)).click();
+
 }
 
 async function extitSelenium() {
     await driver?.close()
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium }
+export { seleniumInit, loginToOpenAi, extitSelenium, messege,skipIntro }
