@@ -54,4 +54,8 @@ async function loginToOpenAi(id: string, pass: string) {
     }
 }
 
-export { seleniumInit, loginToOpenAi }
+async function extitSelenium() {
+    await driver?.close()
+}
+
+export { seleniumInit, loginToOpenAi, extitSelenium }
