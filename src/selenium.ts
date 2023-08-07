@@ -1,5 +1,6 @@
 import { Builder, Browser, By, until, WebDriver, WebElement, } from "selenium-webdriver";
-
+import * as cheerio from 'cheerio';
+import { writeFile } from 'fs'
 // const options = new chrome.Options()
 // options.addArguments("--remote-allow-origins='*'")
 // options.addArguments('--disable-extensions')
@@ -33,7 +34,7 @@ async function loginToOpenAi(id: string, pass: string) {
     const continueButtonPath2 = '/html/body/div/main/section/div/div/div/form/div[3]/button'
 
     if (driver) {
-        await sleep(1000)
+        await sleep(3000)
         try {
             const btn = await driver.findElement(By.xpath(loginButtonPath1))
             await driver.wait(until.elementIsVisible(btn));
@@ -87,8 +88,28 @@ async function messege(messege: string) {
 
 }
 
+async function getRespomnces() {
+    const msgAreaPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[1]/div/div/div'
+    const msgHtml = await driver?.findElement(By.xpath(msgAreaPath)).getAttribute('innerHTML')
+    // msg.
+    parseGptMsg(msgHtml)
+}
+
+
 async function extitSelenium() {
     await driver?.close()
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium, messege,skipIntro }
+function parseGptMsg(html: string | undefined) {
+    if (!html) return
+    writeFile('result.html', html, function (err) {
+        if (err) throw err;
+        console.log('Saved!');
+    });
+    const $ = cheerio.load(html);
+    $('*').map((index, element) => {
+        console.log(index, $(element).text())
+    })
+}
+
+export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces }
