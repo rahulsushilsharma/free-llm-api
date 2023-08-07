@@ -92,7 +92,7 @@ async function getRespomnces() {
     const msgAreaPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[1]/div/div/div'
     const msgHtml = await driver?.findElement(By.xpath(msgAreaPath)).getAttribute('innerHTML')
     // msg.
-    parseGptMsg(msgHtml)
+    return msgHtml || ''
 }
 
 
@@ -112,4 +112,4 @@ function parseGptMsg(html: string | undefined) {
     })
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces }
+export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces,sleep }
