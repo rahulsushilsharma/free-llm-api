@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { parseGpt } from './parser.js';
-import { extitSelenium, getRespomnces, loginToOpenAi, messege, seleniumInit, skipIntro, sleep } from './selenium.js';
+import { extitSelenium, getRespomnces, isResponceComplete, loginToOpenAi, messege, seleniumInit, skipIntro, sleep } from './selenium.js';
 
 
 console.log(process.env.OPENAI_ID)
@@ -13,23 +13,33 @@ async function main() {
     await seleniumInit()
     await loginToOpenAi(id, pass)
     await skipIntro()
+    await messege("basic history of the USA")
     await responceLoop()
-    await messege("hi")
-    sleep(1000)
-    await messege("hi")
+    await messege("basic history of the UN")
+    await responceLoop()
 
+    
 
     // await extitSelenium()
 
 }
 
 async function responceLoop() {
-    setInterval(async () => {
-        let res = await getRespomnces()
-        parseGpt(res)
-    }, 1000)
+    return new Promise((resolve)=>{
+        const responceLoopId = setInterval(async () => {
+            let res = await getRespomnces()
+            parseGpt(res)
+            const resFlag = await isResponceComplete()
+            if (resFlag) {
+                clearInterval(responceLoopId)
+                resolve(responceLoopId)
+            }
+        }, 1000)
+    })
+    
 
 }
+
 
 
 main()

@@ -112,4 +112,21 @@ function parseGptMsg(html: string | undefined) {
     })
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces,sleep }
+
+async function isResponceComplete() {
+    const regenrateButtonPath1 = '//*[@id="__next"]/div[1]/div[2]/div/main/div[2]/form/div/div[1]/div/div[2]/div/button'
+    const regenrateButtonPath2 = '//*[@id="__next"]/div[1]/div/div/main/div[2]/form/div/div[2]/div/div[2]/div/button'
+
+    try {
+        await driver?.findElement(By.xpath(regenrateButtonPath1))
+        return true;
+    } catch {
+        await driver?.findElement(By.xpath(regenrateButtonPath2))
+        return true;
+
+    } finally {
+        return false;
+    }
+}
+
+export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete }
