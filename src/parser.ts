@@ -54,9 +54,12 @@ function parseGpt(html: string) {
             for (const child of res.childNodes) {
                 if (child.type === 'tag') { // Check if it's an element node
                     const childElement = child as cheerio.Element; // Use type assertion here
-                    if (childElement.tagName === 'p' || childElement.tagName === 'ol') {
+                    if (childElement.tagName === 'p') {
                         console.log('data ===> ', $(childElement).text().trim());
-                    } else if (childElement.tagName === 'pre') {
+                    } else if (childElement.tagName === 'ol') {
+                        console.log('code ===> ', $(childElement).text().trim());
+                    }
+                    else if (childElement.tagName === 'pre') {
                         console.log('code ===> ', $(childElement).find('code').text().trim());
                     }
                 }
@@ -65,4 +68,4 @@ function parseGpt(html: string) {
     })
 }
 
-export {parseGpt}
+export { parseGpt }

@@ -1,6 +1,7 @@
-import { Builder, Browser, By, until, WebDriver, WebElement, } from "selenium-webdriver";
+import { Builder, Browser, By, until, WebDriver, WebElement, Capabilities, } from "selenium-webdriver";
 import * as cheerio from 'cheerio';
 import { writeFile } from 'fs'
+import { saveUserSession } from "./database";
 // const options = new chrome.Options()
 // options.addArguments("--remote-allow-origins='*'")
 // options.addArguments('--disable-extensions')
@@ -12,8 +13,15 @@ let driver: WebDriver | null = null
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function seleniumInit() {
+    // const options = new Capabilities();
+    // options.set('browserName', 'chrome');
+    // options.set('chromeOptions', {
+    //     'args': ['user-data-dir=C:\\Users\\rahu8\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 2'],
+    // });
     driver = await new Builder().forBrowser(Browser.CHROME).build();
+
 }
+
 
 /**
  * Navigates to the specified URL.
@@ -23,9 +31,36 @@ async function gotoPage(url: string) {
     await driver?.get(url);
 }
 
+async function loadSession(serializedCookies = '') {
+    if (!driver) return;
+    // Load the saved cookies from a file or storage
+    // For example, deserialize the JSON from the file and convert it back to an array
+    // Load serialized cookies from file or storage
+    const cookies = JSON.parse(serializedCookies);
+
+    // Add the saved cookies to the WebDriver instance
+    for (const cookie of cookies) {
+        await driver.manage().addCookie(cookie);
+        console.log(cookie)
+    }
+}
+
+async function getUserSessionfromBrowsern() {
+    if (!driver) return;
+
+    // Get the current session cookies
+    const cookies = await driver.manage().getCookies();
+
+    // Save the cookies to a file or a storage mechanism of your choice
+    // For example, you can serialize the cookies array to JSON and save it to a file
+    const serializedCookies = JSON.stringify(cookies);
+    return serializedCookies;
+}
 
 async function loginToOpenAi(id: string, pass: string) {
-    await gotoPage('https://chat.openai.com/auth/login')
+    if (!driver) return
+    
+
     const loginButtonPath1 = "//*[text()='Log in']"
     const loginButtonPath2 = "//*[text()='Log in']"
     const emailFeildPath = "//*[text()='Email address']"
@@ -129,4 +164,4 @@ async function isResponceComplete() {
     }
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete }
+export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete, loadSession,getUserSessionfromBrowsern,gotoPage }
