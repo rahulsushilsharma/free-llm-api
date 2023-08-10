@@ -135,3 +135,6 @@ log
 
 profile
 database
+
+#testing code
+test.ts
