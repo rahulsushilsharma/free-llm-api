@@ -21,7 +21,7 @@ options.addArguments('--profile-directory=Profile 4')
 
 let driver: WebDriver | null = null
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms*Math));
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms*Math.random()));
 
 async function seleniumInit() {
     // const options = new Capabilities();
