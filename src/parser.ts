@@ -40,10 +40,16 @@ import * as cheerio from 'cheerio';
 
 function parseGpt(html: string) {
     const $ = cheerio.load(html)
-    const response: any[] = []
+    const response: {
+        user: string
+        chat: string
+    }[] = []
     $('.group').map((index, element) => {
 
-        const curResopnce:any = {}
+        const curResopnce: {
+            user: string
+            chat: string
+        } = { user: '', chat: '' }
         if ($(element).find('title').text() != 'ChatGPT') {
             if ($(element).text().trim())
                 curResopnce.user = $(element).find('.break-words').text().trim().replace('  ', '')

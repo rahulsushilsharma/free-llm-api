@@ -1,10 +1,5 @@
-import { Builder, Browser, By, until, WebDriver, WebElement, Capabilities, } from "selenium-webdriver";
+import { Builder, Browser, By, until, WebDriver, } from "selenium-webdriver";
 import chrome from 'selenium-webdriver/chrome.js'
-import * as cheerio from 'cheerio';
-import { writeFile } from 'fs'
-import { saveUserSession } from "./database";
-
-// options.
 
 
 let driver: WebDriver | null = null
@@ -12,22 +7,7 @@ let driver: WebDriver | null = null
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms * Math.random()));
 
 async function seleniumInit(profilePath: string, profileName: string) {
-    // const options = new Capabilities();
-    // options.set('browserName', 'chrome');
-    // options.set('chromeOptions', {
-    // C:\Users\rahu8\AppData\Local\Google\Chrome\User Data\Profile 4
-    //     'args': ['user-data-dir=C:\\Users\\rahu8\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 2'],
-    // });
 
-    // const options = new ChromeOptions();
-    // options.set('browserName', 'chrome');
-    // options.set('chromeOptions', {
-    //   'args': ["--user-data-dir=C:\\Users\\rahu8\\AppData\\Local\\Google\\Chrome\\User Data",'--start-maximized'],
-    // });
-
-    // driver = await new Builder()
-    //   .withCapabilities(options)
-    //   .build();
     const options = new chrome.Options()
     // options.addArguments("--remote-allow-origins='*'")
     // options.addArguments('--disable-extensions')
@@ -106,20 +86,15 @@ async function loginToOpenAi(id: string, pass: string) {
             await driver.wait(until.elementIsVisible(btn));
             await btn.click()
         }
-
         await sleep(3000)
         const email = await driver.findElement({ css: '#username' })
         await driver.wait(until.elementIsVisible(email));
         await email.sendKeys(id);
-        // await driver?.findElement()
         await sleep(3000)
-
         await driver?.findElement(By.xpath(continueButtonPath1)).click();
         await sleep(3000)
-
         await driver?.findElement(By.xpath(passwordFeildPath)).sendKeys(pass);
         await sleep(3000)
-
         await driver?.findElement(By.xpath(continueButtonPath2)).click();
     }
 }
@@ -158,7 +133,6 @@ async function messege(messege: string) {
 async function getRespomnces() {
     const msgAreaPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[1]/div/div/div'
     const msgHtml = await driver?.findElement(By.xpath(msgAreaPath)).getAttribute('innerHTML')
-    // msg.
     return msgHtml || ''
 }
 
@@ -166,19 +140,6 @@ async function getRespomnces() {
 async function extitSelenium() {
     await driver?.close()
 }
-
-function parseGptMsg(html: string | undefined) {
-    if (!html) return
-    writeFile('result.html', html, function (err) {
-        if (err) throw err;
-        console.log('Saved!');
-    });
-    const $ = cheerio.load(html);
-    $('*').map((index, element) => {
-        console.log(index, $(element).text())
-    })
-}
-
 
 async function isResponceComplete() {
     const regenrateButtonPath1 = '//*[@id="__next"]/div[1]/div[2]/div/main/div[2]/form/div/div[1]/div/div[2]/div/button'
@@ -188,7 +149,6 @@ async function isResponceComplete() {
         await driver?.findElement(By.xpath(sendButtonPath))
         return true;
     } catch {
-        // await driver?.findElement(By.xpath(regenrateButtonPath2))
         return false;
 
     }
