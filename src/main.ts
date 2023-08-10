@@ -12,9 +12,11 @@ import { startServer } from './server.js';
 
 const id = process.env.OPENAI_ID || ""
 const pass = process.env.OPENAI_PASSWORD || ""
+const profilePath = process.env.CHROME_PROFILE_PATH || ""
+const profileName = process.env.CHROME_PROFILE_NAME || ""
 
 async function main() {
-    await seleniumInit()
+    await seleniumInit(profilePath,profileName)
     await initilizeDb()
     await gotoPage('https://chat.openai.com')
     try{

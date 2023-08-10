@@ -54,7 +54,7 @@ function parseGpt(html: string) {
             console.log('Assistent')
 
             const res = $(element).find('.markdown')[0] as cheerio.Element; // Use type assertion here
-            if(!res) return response
+            if(!res) return response.chat = 'Openai is being a bitch... sovle the capta in browser and retry'
             // Loop through the child nodes
             for (const child of res.childNodes) {
                 if (child.type === 'tag') { // Check if it's an element node

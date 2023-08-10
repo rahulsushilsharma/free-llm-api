@@ -3,43 +3,44 @@ import chrome from 'selenium-webdriver/chrome.js'
 import * as cheerio from 'cheerio';
 import { writeFile } from 'fs'
 import { saveUserSession } from "./database";
-const options = new chrome.Options()
-// options.addArguments("--remote-allow-origins='*'")
-// options.addArguments('--disable-extensions')
-// options.addArguments('--start-maximized')
-// options.addArguments("start-maximized"); // open Browser in maximized mode
-// options.addArguments("disable-infobars"); // disabling infobars
-// options.addArguments("--disable-extensions"); // disabling extensions
-// options.addArguments("--disable-gpu"); // applicable to windows os only
-// options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
-// options.addArguments("--no-sandbox");
-// options.addArguments("--remote-debugging-port=9222")
-options.addArguments('--user-data-dir=D:\\dev\\open_projects\\chat-to-api\\profile')
-options.addArguments('--profile-directory=Profile 4')
+
 // options.
 
 
 let driver: WebDriver | null = null
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms*Math.random()));
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms * Math.random()));
 
-async function seleniumInit() {
+async function seleniumInit(profilePath: string, profileName: string) {
     // const options = new Capabilities();
     // options.set('browserName', 'chrome');
     // options.set('chromeOptions', {
-        // C:\Users\rahu8\AppData\Local\Google\Chrome\User Data\Profile 4
+    // C:\Users\rahu8\AppData\Local\Google\Chrome\User Data\Profile 4
     //     'args': ['user-data-dir=C:\\Users\\rahu8\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 2'],
     // });
-    
+
     // const options = new ChromeOptions();
     // options.set('browserName', 'chrome');
     // options.set('chromeOptions', {
     //   'args': ["--user-data-dir=C:\\Users\\rahu8\\AppData\\Local\\Google\\Chrome\\User Data",'--start-maximized'],
     // });
-  
+
     // driver = await new Builder()
     //   .withCapabilities(options)
     //   .build();
+    const options = new chrome.Options()
+    // options.addArguments("--remote-allow-origins='*'")
+    // options.addArguments('--disable-extensions')
+    // options.addArguments('--start-maximized')
+    // options.addArguments("start-maximized"); // open Browser in maximized mode
+    // options.addArguments("disable-infobars"); // disabling infobars
+    // options.addArguments("--disable-extensions"); // disabling extensions
+    // options.addArguments("--disable-gpu"); // applicable to windows os only
+    // options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+    // options.addArguments("--no-sandbox");
+    // options.addArguments("--remote-debugging-port=9222")
+    options.addArguments(profilePath)
+    options.addArguments(profileName)
     driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
 
 }
@@ -53,7 +54,7 @@ async function gotoPage(url: string) {
     await driver?.get(url);
 }
 
-async function loadSession(serializedCookies : any) {
+async function loadSession(serializedCookies: any) {
     if (!driver) return;
     // Load the saved cookies from a file or storage
     // For example, deserialize the JSON from the file and convert it back to an array
@@ -63,8 +64,8 @@ async function loadSession(serializedCookies : any) {
     // Add the saved cookies to the WebDriver instance
     for (const cookie of serializedCookies) {
 
-        cookie.secure = false 
-        cookie.httpOnly = false 
+        cookie.secure = false
+        cookie.httpOnly = false
         console.log(cookie)
 
         await driver.manage().addCookie(cookie);
@@ -85,7 +86,7 @@ async function getUserSessionfromBrowsern() {
 
 async function loginToOpenAi(id: string, pass: string) {
     if (!driver) return
-    
+
 
     const loginButtonPath1 = "//*[text()='Log in']"
     const loginButtonPath2 = "//*[text()='Log in']"
@@ -139,16 +140,16 @@ async function skipIntro() {
 
 }
 async function messege(messege: string) {
-    if(!driver)return
+    if (!driver) return
     const textAreaPath = '//*[@id="prompt-textarea"]'
     const submitButtonPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[2]/form/div/div[2]/button'
 
     const textArea = await driver.findElement(By.xpath(textAreaPath))
-    for(const char of messege){
+    for (const char of messege) {
         textArea.sendKeys(char);
-        await sleep(700*Math.random())
+        await sleep(700 * Math.random())
     }
-    
+
 
     await driver?.findElement(By.xpath(submitButtonPath)).click();
 
@@ -190,7 +191,7 @@ async function isResponceComplete() {
         // await driver?.findElement(By.xpath(regenrateButtonPath2))
         return false;
 
-    } 
+    }
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete, loadSession,getUserSessionfromBrowsern,gotoPage }
+export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete, loadSession, getUserSessionfromBrowsern, gotoPage }
