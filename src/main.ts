@@ -23,20 +23,20 @@ async function main() {
 
 }
 
-async function checkPrevousSession(vendor: string) {
-    const session = await getUserSession(vendor)
-    console.log(session)
+// async function checkPrevousSession(vendor: string) {
+//     const session = await getUserSession(vendor)
+//     console.log(session)
 
-    if (session.length == 0) return false;
+//     if (session.length == 0) return false;
 
-    await loadSession(session[0].data)
-    return true
-}
+//     await loadSession(session[0].data)
+//     return true
+// }
 
-async function saveCurrentSession(vendor: string) {
-    const session = await getUserSessionfromBrowsern()
-    await saveUserSession(vendor, session)
-}
+// async function saveCurrentSession(vendor: string) {
+//     const session = await getUserSessionfromBrowsern()
+//     await saveUserSession(vendor, session)
+// }
 
 
 

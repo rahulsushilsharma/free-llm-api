@@ -1,89 +1,60 @@
 import * as cheerio from 'cheerio';
-// import { writeFile, readFile } from 'fs'
 
-// readFile('result.html', (err, data) => {
-//     const $ = cheerio.load(data)
-//     $('.group').map((index, element) => {
-//         if ($(element).find('title').text() != 'ChatGPT') {
-//             if ($(element).text().trim())
-//                 console.log('User', $(element).find('.break-words').text().trim().replace('  ', ''))
-
-//         } else {
-//             console.log('Assistent')
-
-//             const res = $(element).find('.markdown')[0] as cheerio.Element; // Use type assertion here
-
-//             // Loop through the child nodes
-//             for (const child of res.childNodes) {
-//                 if (child.type === 'tag') { // Check if it's an element node
-//                     const childElement = child as cheerio.Element; // Use type assertion here
-//                     if (childElement.tagName === 'p') {
-//                         console.log('data ===> ', $(childElement).text().trim());
-//                     } else if (childElement.tagName === 'pre') {
-//                         console.log('code ===> ', $(childElement).find('code').text().trim());
-//                     }
-//                 }
-//             }
-//             // const pra = $(element).find('p')
-//             // const code = $(element).find('code')
-
-//             // for(const p in pra){
-//             //     console.log($(p).text().replace('\t','').replace(' ','').trim()|| null)
-//             // }
-//             // for(const p in code){
-//             //     console.log($(p).text().replace('\t','').replace(' ','').trim()||null)
-//             // }
-//         }
-//     })
-// })
-
-
-function parseGpt(html: string) {
+function parseGpt(html: string | Buffer) {
     const $ = cheerio.load(html)
-    const response: {
-        user: string
-        chat: string
+    let response: {
+        user?: string
+        chat?: string
     }[] = []
+
     $('.group').map((index, element) => {
 
-        const curResopnce: {
-            user: string
-            chat: string
-        } = { user: '', chat: '' }
-        if ($(element).find('title').text() != 'ChatGPT') {
+        if ($(element).find('svg > text').text() != 'ChatGPT') {
             if ($(element).text().trim())
-                curResopnce.user = $(element).find('.break-words').text().trim().replace('  ', '')
-            // console.log('User', )
+                response.push({
+                    'user': $(element).find('.break-words').text().trim().replace('  ', '')
+                })
+
+
 
         } else {
-            console.log('Assistent')
-
+            let chat = ''
             const res = $(element).find('.markdown')[0] as cheerio.Element; // Use type assertion here
-            if (!res) return curResopnce.chat = 'Openai is being a bitch... sovle the capta in browser and retry'
+            if (!res) return chat = 'Openai is being a bitch... sovle the capta in browser and retry'
             // Loop through the child nodes
             for (const child of res.childNodes) {
-                if (child.type === 'tag') { // Check if it's an element node
-                    const childElement = child as cheerio.Element; // Use type assertion here
-                    if (childElement.tagName === 'p') {
-                        curResopnce.chat += $(childElement).text().trim() + '\n'
-                        // console.log('data ===> ', );
-                    } else if (childElement.tagName === 'ol') {
-                        $(childElement).find('li').map((index, element) => {
-                            curResopnce.chat += index + '. ' + $(element).text().trim() + '\n'
 
-                            // console.log(index, $(element).text().trim());
+                if (child.type === 'tag') { // Check if it's an element node
+
+                    const childElement = child as cheerio.Element; // Use type assertion here
+
+                    if (childElement.tagName === 'p') {
+
+                        chat += $(childElement).text().trim() + '\n'
+
+                    } else if (childElement.tagName === 'ol') {
+
+                        $(childElement).find('li').map((index, element) => {
+
+                            chat += index + '. ' + $(element).text().trim() + '\n'
+
                         })
 
                     }
                     else if (childElement.tagName === 'pre') {
-                        curResopnce.chat += $(childElement).find('code').text().trim() + '\n'
+                        chat += $(childElement).find('code').text().trim() + '\n'
 
-                        // console.log('code ===> ', );
                     }
                 }
             }
+            response.push({ chat: chat })
+
         }
-        response.push(curResopnce)
+
+
+
+
+
     })
     return response
 }

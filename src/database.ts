@@ -30,22 +30,24 @@ async function getUserSession(vendor: string) {
     return await userSessionDb.findAsync({ vendor })
 }
 
-async function saveOpenAiChat(sessionName: string, data: any) {
-    try {
-        await userSessionDb.updateAsync({ id: sessionName }, { data: data })
-    } catch {
-        await userSessionDb.insertAsync({
-            id: sessionName,
+async function saveOpenAiChat(id: string|null, data: any) {
+    if (id !== null) {
+        return await openAiDb.updateAsync({ _id: id }, { $set: { data: data }})
+    } else {
+        return await openAiDb.insertAsync({
+            vendor:'GPT-3.5',
             data: data,
             date: Date.now()
         })
     }
 }
 async function getOpenAiChat(session: string) {
-    return await userSessionDb.findAsync({ id: session })
+    return await openAiDb.findAsync({ id: session })
 }
 
 // await initilizeDb()
+// const data =await openAiDb.findAsync({})
+// console.log(data)
 // await saveUserSession('Gpt','session')
 // const session = await getUserSession('Gpt')
 // console.log('session',session)
