@@ -12,7 +12,7 @@ const profileName = process.env.CHROME_PROFILE_NAME || ""
 async function main() {
     await seleniumInit(profilePath,profileName)
     await initilizeDb()
-    await gotoPage('https://chat.openai.com')
+    await gotoPage('https://chat.openai.com/')
     try{
     await loginToOpenAi(id, pass)
     await skipIntro()

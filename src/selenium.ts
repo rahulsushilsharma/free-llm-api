@@ -21,7 +21,13 @@ async function seleniumInit(profilePath: string, profileName: string) {
     // options.addArguments("--remote-debugging-port=9222")
     options.addArguments(profilePath)
     options.addArguments(profileName)
+    options.addArguments('--disable-blink-features=AutomationControlled')
     driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build();
+    await driver.executeScript(`
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined
+      });
+    `);
 
 }
 
