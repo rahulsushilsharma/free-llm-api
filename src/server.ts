@@ -46,7 +46,10 @@ function startServer() {
 async function responceLoop() {
     return new Promise<{
         user?: string;
-        chat?: string;
+        chat?: {
+            text: string;
+            code: string;
+        }[];
     }[]>((resolve, reject) => {
         let id: string | null = null
         const responceLoopId = setInterval(async () => {

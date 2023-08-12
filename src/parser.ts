@@ -4,7 +4,10 @@ function parseGpt(html: string | Buffer) {
     const $ = cheerio.load(html)
     let response: {
         user?: string
-        chat?: string
+        chat?: {
+            text: string,
+            code: string
+        }[]
     }[] = []
 
     $('.group').map((index, element) => {
@@ -15,39 +18,52 @@ function parseGpt(html: string | Buffer) {
                     'user': $(element).find('.break-words').text().trim().replace('  ', '')
                 })
 
-
-
         } else {
-            let chat = ''
+            let chatDataarr: {
+                text: string,
+                code: string
+            }[] = []
             const res = $(element).find('.markdown')[0] as cheerio.Element; // Use type assertion here
-            if (!res) return chat = 'Sovle the capta in browser and retry...'
+            if (!res) return chatDataarr[0]['text'] = 'Sovle the capta in browser and retry...'
             // Loop through the child nodes
             for (const child of res.childNodes) {
+                let chat = ''
 
+                let chatData: any = {
+                    text: '',
+                    code: ''
+                }
                 if (child.type === 'tag') { // Check if it's an element node
 
                     const childElement = child as cheerio.Element; // Use type assertion here
 
                     if (childElement.tagName === 'p') {
 
-                        chat += $(childElement).text().trim() + '\n'
+                        chat += $(childElement).text().replace(/\n\s+/g, ' ') + '\n'
+                        chatData['text'] = chat
 
                     } else if (childElement.tagName === 'ol') {
 
                         $(childElement).find('li').map((index, element) => {
 
-                            chat += index + '. ' + $(element).text().trim() + '\n'
+                            chat += index + 1 + '. ' + $(element).text().replace(/\n\s+/g, ' ') + '\n'
+
 
                         })
+                        chatData['text'] = chat
 
                     }
                     else if (childElement.tagName === 'pre') {
-                        chat += $(childElement).find('code').text().trim() + '\n'
+                        chat += '\n```\n' + $(childElement).find('code').text()
+                        chat += '\n```\n'
+                        chatData['code'] = chat
 
                     }
+                    chatDataarr.push(chatData)
                 }
+
             }
-            response.push({ chat: chat })
+            response.push({ chat: chatDataarr })
 
         }
 
