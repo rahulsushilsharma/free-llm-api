@@ -20,7 +20,7 @@ function parseGpt(html: string | Buffer) {
         } else {
             let chat = ''
             const res = $(element).find('.markdown')[0] as cheerio.Element; // Use type assertion here
-            if (!res) return chat = 'Openai is being a bitch... sovle the capta in browser and retry'
+            if (!res) return chat = 'Sovle the capta in browser and retry...'
             // Loop through the child nodes
             for (const child of res.childNodes) {
 
