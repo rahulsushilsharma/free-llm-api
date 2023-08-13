@@ -24,7 +24,7 @@ function parseGpt(html: string | Buffer) {
                 code: string
             }[] = []
             const res = $(element).find('.markdown')[0] as cheerio.Element; // Use type assertion here
-            if (!res) return chatDataarr[0]['text'] = 'Sovle the capta in browser and retry...'
+            if (!res) return chatDataarr
             // Loop through the child nodes
             for (const child of res.childNodes) {
                 let chat = ''

@@ -1,4 +1,4 @@
-import { Builder, Browser, By, until, WebDriver, } from "selenium-webdriver";
+import { Builder, Browser, By, until, WebDriver, Key, } from "selenium-webdriver";
 import chrome from 'selenium-webdriver/chrome.js'
 
 
@@ -112,14 +112,24 @@ async function skipIntro() {
 
 }
 
-async function messege(messege: string) {
+async function messege(messege: { type: string, paste: string }) {
     if (!driver) return
 
     const textArea = await driver.findElement(By.xpath(textAreaPath))
-    for (const char of messege) {
-        textArea.sendKeys(char);
+    for (const char of messege.type) {
+        if(char!='\n')textArea.sendKeys(char);
         await sleep(700 * Math.random())
     }
+    await sleep(3000)
+    for (const char of messege.paste) {
+        if(char!='\n')textArea.sendKeys(char);
+        else{
+            textArea.sendKeys(Key.SHIFT,Key.ENTER);
+        }
+       
+    }
+    
+
     await driver?.findElement(By.xpath(submitButtonPath)).click();
 
 }
@@ -134,6 +144,10 @@ async function newChat() {
 async function getRespomnces() {
     const msgHtml = await driver?.findElement(By.xpath(msgAreaPath)).getAttribute('innerHTML')
     return msgHtml || ''
+}
+
+async function regenrateResponce() {
+
 }
 
 
@@ -162,5 +176,6 @@ async function checkError() {
         return true
     }
 }
+
 
 export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete, loadSession, getUserSessionfromBrowsern, gotoPage, checkError, newChat }
