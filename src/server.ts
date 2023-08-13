@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { checkError, getRespomnces, isResponceComplete, messege, sleep } from './selenium.js';
+import { checkError, getRespomnces, isResponceComplete, messege, newChat, sleep } from './selenium.js';
 import { parseGpt } from './parser.js';
 import { saveOpenAiChat } from './database.js';
 
@@ -15,6 +15,11 @@ app.get('/', (req, res) => {
     res.send('Hello, Express server is up and running!');
 });
 
+app.get('/new_chat', async (req, res) => {
+    await newChat()
+    res.send({ message: 'New chat created' })
+})
+
 // POST request handler
 app.post('/chat', async (req, res) => {
     const requestData = req.body;
@@ -22,7 +27,7 @@ app.post('/chat', async (req, res) => {
     await messege(requestData.msg)
     await sleep(3000)
     try {
-        const response = await responceLoop()
+        const response = await responceLoop(1000)
 
         saveOpenAiChat(requestData.msg, response)
         res.status(200).json({ message: 'Data received successfully', data: response.at(-1) });
@@ -31,6 +36,10 @@ app.post('/chat', async (req, res) => {
 
     }
 });
+
+
+
+
 
 // Start the server
 
@@ -43,7 +52,7 @@ function startServer() {
 }
 
 
-async function responceLoop() {
+async function responceLoop(time: number) {
     return new Promise<{
         user?: string;
         chat?: {
@@ -63,11 +72,9 @@ async function responceLoop() {
             if (error) { reject('Error genrating responce') }
             if (resFlag) {
                 clearInterval(responceLoopId)
-                const dbRes = await saveOpenAiChat(id, resp)
-                if ('_id' in dbRes) id = dbRes._id
                 resolve(resp)
             }
-        }, 1000)
+        }, time)
     })
 
 

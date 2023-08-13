@@ -17,6 +17,7 @@ const doneBtnPath = "//*[text()='Done']"
 const textAreaPath = '//*[@id="prompt-textarea"]'
 const msgAreaPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[1]/div/div/div'
 const submitButtonPath = '//*[@id="__next"]/div[1]/div[2]/div/main/div[2]/form/div/div[2]/button'
+const newChatButtonPath = '//*[@id="__next"]/div[1]/div[1]/div/div/div/nav/div[1]/a'
 
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms * Math.random()));
@@ -123,6 +124,13 @@ async function messege(messege: string) {
 
 }
 
+async function newChat() {
+    if (!driver) return;
+
+    await driver.findElement(By.xpath(newChatButtonPath)).click()
+
+}
+
 async function getRespomnces() {
     const msgHtml = await driver?.findElement(By.xpath(msgAreaPath)).getAttribute('innerHTML')
     return msgHtml || ''
@@ -155,4 +163,4 @@ async function checkError() {
     }
 }
 
-export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete, loadSession, getUserSessionfromBrowsern, gotoPage, checkError }
+export { seleniumInit, loginToOpenAi, extitSelenium, messege, skipIntro, getRespomnces, sleep, isResponceComplete, loadSession, getUserSessionfromBrowsern, gotoPage, checkError, newChat }
