@@ -121,15 +121,11 @@ async function messege(messege: { type: string, paste: string }) {
         await sleep(700 * Math.random())
     }
     await sleep(3000)
-    for (const char of messege.paste) {
-        if(char!='\n')textArea.sendKeys(char);
-        else{
-            textArea.sendKeys(Key.SHIFT,Key.ENTER);
-        }
-       
-    }
+     await driver.executeScript((element: any, value: any) => {
+      element.value += value;
+    }, textArea, messege.paste);
+    textArea.sendKeys(' ');
     
-
     await driver?.findElement(By.xpath(submitButtonPath)).click();
 
 }

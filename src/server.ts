@@ -41,7 +41,7 @@ app.post('/chat', async (req, res) => {
         const dbLog = await updateOpenAiChat(openAiChatSessionId, response)
         console.log("DB", dbLog);
 
-        res.status(200).json({ message: 'Data received successfully', data: response.at(-1) });
+        res.status(200).json({ message: 'Data received successfully', data: response });
     } catch (error) {
 
         res.status(400).json({ message: error });
