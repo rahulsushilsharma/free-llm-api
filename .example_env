@@ -1,0 +1,4 @@
+OPENAI_ID=
+OPENAI_PASSWORD=
+CHROME_PROFILE_PATH= --user-data-dir=
+CHROME_PROFILE_NAME= --profile-directory=
