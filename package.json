@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "compile:watch":"npx tsc -w",
+    "start": "echo \"Compiling code...\" && npx tsc && echo \"Starting application...\" && node ./dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
